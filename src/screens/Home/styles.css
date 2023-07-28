@@ -6,3 +6,11 @@
   width: 100vw;
   flex-direction: column;
 }
+
+.get-data-button {
+  background-color: lightblue;
+  color: black;
+  height: 2em;
+  width: 6em;
+  margin: 1em;
+}

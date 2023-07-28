@@ -6,6 +6,7 @@ function Home() {
   const { logout, user, getAccessTokenSilently } = useAuth0()
   const [userMetadata, setUserMetadata] = useState(null)
   const [accessToken, setAccessToken] = useState(null)
+  const [responseData, setResponseData] = useState(null)
 
   useEffect(() => {
     let isSubscribed = true
@@ -44,21 +45,39 @@ function Home() {
     return () => (isSubscribed = false)
   }, [getAccessTokenSilently, user?.sub])
 
-  return userMetadata && (
-    <div className='home-main'>
-      <h2>Home page</h2>
-      <div>
-        <img src={userMetadata.picture} alt={userMetadata.name} />
-        <h2>{userMetadata.name}</h2>
-        <p>{userMetadata.email}</p>
-        <h3>User Metadata</h3>
-        {userMetadata ? <pre>{JSON.stringify(userMetadata, null, 2)}</pre> : 'No user metadata defined'}
-      </div>
+  const handleGetData = async () => {
+    const response = await fetch('http://localhost:3001/users/get', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
 
-      <button className='login-button' onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-        Logout
-      </button>
-    </div>
+    const data = await response.json()
+    setResponseData(data)
+  }
+
+  return (
+    userMetadata && (
+      <div className='home-main'>
+        <h2>Home page</h2>
+        <div>
+          <img src={userMetadata.picture} alt={userMetadata.name} />
+          <h2>{userMetadata.name}</h2>
+          <p>{userMetadata.email}</p>
+          <h3>User Metadata</h3>
+          {userMetadata ? <pre>{JSON.stringify(userMetadata, null, 2)}</pre> : 'No user metadata defined'}
+        </div>
+
+        <button className='get-data-button' onClick={handleGetData}>
+          Get Data
+        </button>
+        {responseData && <h6>{JSON.stringify(responseData, null, 2)}</h6>}
+
+        <button className='login-button' onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+          Logout
+        </button>
+      </div>
+    )
   )
 }
 
