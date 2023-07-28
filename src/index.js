@@ -7,13 +7,18 @@ import { RouterProvider } from 'react-router-dom'
 import router from './components/Router'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
+
+const auth0_uri = 'dev-ozpmzyr356adqgtv.us.auth0.com'
+
 root.render(
   <React.StrictMode>
     <Auth0Provider
-      domain='dev-ozpmzyr356adqgtv.us.auth0.com'
+      domain={auth0_uri}
       clientId='I38zPMzyLG5HP4yoZUk14wmqOciThPdS'
       authorizationParams={{
-        redirect_uri: window.location.origin + '/home'
+        redirect_uri: window.location.origin + '/home',
+        audience: `https://${auth0_uri}/api/v2/`,
+        scope: "read:current_user update:current_user_metadata"
       }}
     >
       <RouterProvider router={router} />
